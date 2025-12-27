@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDF → Excel (Bangla Voter List)</title>
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.js"></script>
+
+  <!-- Tesseract.js (OCR) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- SheetJS (Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1>PDF → Excel (Bangla)</h1>
+      <p class="muted">PDF আপলোড করুন → OCR হবে → Excel তৈরি হবে → Download</p>
+    </header>
+
+    <section class="card">
+      <label class="label">PDF Upload করুন</label>
+      <input id="pdfInput" class="file" type="file" accept="application/pdf" />
+
+      <div class="row">
+        <button id="btnStart" class="btn" disabled>Upload & Convert</button>
+        <button id="btnStop" class="btn btn-ghost" disabled>Stop</button>
+      </div>
+
+      <div class="tips">
+        <div>✅ ফিল্ড: নাম, ভোটার নং, পিতা, মাতা, পেশা, জন্ম তারিখ, ঠিকানা</div>
+        <div>⚠️ বড় PDF হলে সময় লাগবে।</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="status">
+        <div class="statusTitle">Status</div>
+        <div id="statusText" class="muted">PDF সিলেক্ট করুন।</div>
+      </div>
+
+      <div class="progress">
+        <div id="bar" class="bar" style="width:0%"></div>
+      </div>
+
+      <div class="row">
+        <a id="dlPdf" class="btn" href="#" download="uploaded.pdf" style="display:none">⬇ Download PDF</a>
+        <a id="dlXlsx" class="btn" href="#" download="output.xlsx" style="display:none">⬇ Download Excel</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <button id="btnPreview" class="btn btn-ghost" disabled>Preview Table</button>
+        <button id="btnClear" class="btn btn-ghost">Clear</button>
+      </div>
+      <div id="tableWrap" class="tableWrap"></div>
+    </section>
+
+    <footer class="footer muted">
+      Live website করতে চাইলে GitHub Pages ব্যবহার করুন (নিচে নির্দেশনা দিলাম)।
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
