@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Entry</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    .box {
+      max-width: 450px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #0b57d0;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Data Entry Form</h2>
+
+  <input id="buyer" placeholder="Buyer">
+  <input id="style" placeholder="Style">
+  <input id="color" placeholder="Color">
+  <input id="qty" placeholder="Qty">
+  <textarea id="remarks" placeholder="Remarks"></textarea>
+
+  <button onclick="saveData()">Save</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7MLqlxSqwFbvx5ihDKyIQ6l_fNRuisKld4y3M_CEDKOvYKU1SAxZDp0g910emXGz_/exec";
+
+function saveData() {
+  const data = {
+    buyer: document.getElementById("buyer").value,
+    style: document.getElementById("style").value,
+    color: document.getElementById("color").value,
+    qty: document.getElementById("qty").value,
+    remarks: document.getElementById("remarks").value
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => {
+    document.getElementById("msg").innerText = "Saved successfully";
+
+    document.getElementById("buyer").value = "";
+    document.getElementById("style").value = "";
+    document.getElementById("color").value = "";
+    document.getElementById("qty").value = "";
+    document.getElementById("remarks").value = "";
+  })
+  .catch(err => {
+    document.getElementById("msg").innerText = "Error: " + err;
+  });
+}
+</script>
+
+</body>
+</html>
