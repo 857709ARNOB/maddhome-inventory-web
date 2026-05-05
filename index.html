@@ -9,30 +9,35 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:#dfe3e8;color:#111}
     .app-shell{padding:6px}
-    .panel{background:#efefef;border-radius:12px;padding:8px;margin-bottom:8px}
-    .toolbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-    .toolbar-left,.toolbar-right{display:flex;gap:6px;flex-wrap:wrap;align-items:end}
+    .panel{background:#efefef;border-radius:12px;padding:8px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .toolbar-left,.toolbar-right{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
     .filter-group{display:flex;flex-direction:column;gap:3px}
-    .filter-group label{font-size:10px;font-weight:700}
-    input,select{height:32px;border:1px solid #bbb;border-radius:7px;padding:6px;font-size:11px}
+    .filter-group label{font-size:10px;font-weight:700;color:#444}
+    input,select{height:32px;border:1px solid #bbb;border-radius:7px;padding:7px 9px;font-size:11px;background:#fff}
     .btn{border:0;border-radius:7px;padding:8px 12px;height:32px;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
-    .btn-print{background:#f57c00}.btn-refresh{background:#6c727a}.btn-entry{background:#5b4bdb}
-    .btn-save{background:#2e7d32}.btn-cancel{background:#757575}.btn-delete{background:#d32f2f}
-    .table-wrap{overflow:auto;background:#fff;border:1px solid #ccc;border-radius:10px;max-height:calc(100vh - 120px)}
-    table{border-collapse:collapse;width:max-content;min-width:100%}
-    th,td{border:1px solid #444;padding:4px 5px;font-size:10px;text-align:center;white-space:nowrap}
-    th{position:sticky;top:0;background:#12dfb3;z-index:2}
-    .check-col{position:sticky;left:0;background:#fff;z-index:1}
-    th.check-col{background:#12dfb3;z-index:3}
-    .action-cell{position:sticky;right:0;background:#fff;z-index:1}
-    th.action-cell{background:#12dfb3;z-index:3}
-    .loading{text-align:center;padding:20px;font-size:13px}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999}
+    .btn:hover{opacity:.9}
+    .btn-print{background:#f57c00}
+    .btn-refresh{background:#6c727a}
+    .btn-row-print{background:#ef6c00}
+    .table-wrap{width:100%;overflow:auto;border:1px solid #c8c8c8;border-radius:10px;background:#fff;max-height:calc(100vh - 115px)}
+    table{border-collapse:collapse;width:max-content;min-width:100%;background:#fff}
+    th,td{border:1px solid #444;padding:4px 5px;font-size:10px;text-align:center;white-space:nowrap;vertical-align:middle}
+    thead th{position:sticky;top:0;z-index:2;background:#12dfb3;color:#000;font-weight:700}
+    tbody tr:nth-child(even){background:#fafafa}
+    .check-col{min-width:34px;width:34px;position:sticky;left:0;background:#fff;z-index:1}
+    thead .check-col{z-index:3;background:#12dfb3}
+    .action-cell{min-width:80px;width:80px;position:sticky;right:0;background:#fff;z-index:1}
+    thead .action-cell{z-index:3;background:#12dfb3}
+    .loading{padding:18px;text-align:center;font-size:13px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:12px;z-index:9999}
     .modal.show{display:flex}
-    .modal-box{background:#fff;border-radius:14px;padding:18px;width:min(420px,94%)}
-    .modal-title{margin:0 0 10px;font-size:18px}
-    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
-    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 18px;border-radius:20px;color:#fff;font-size:12px;font-weight:700;z-index:99999}
+    .modal-box{width:min(380px,100%);background:#fff;border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    .modal-title{margin:0 0 8px 0;font-size:18px;font-weight:700}
+    .modal-text{margin:0 0 12px 0;font-size:13px;color:#333}
+    .modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .btn-cancel{background:#757575}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;z-index:99999}
   </style>
 </head>
 
@@ -43,17 +48,22 @@
       <div class="toolbar-left">
         <div class="filter-group">
           <label>SEARCH</label>
-          <input id="searchBox" placeholder="Search..." oninput="applyFilters()">
+          <input type="text" id="searchBox" placeholder="Search..." oninput="applyFilters()">
         </div>
 
         <div class="filter-group">
           <label>YEAR</label>
-          <select id="yearSel" onchange="populateMonths();applyFilters()"></select>
+          <select id="yearSel" onchange="populateMonths();populateShipDates();applyFilters()"></select>
         </div>
 
         <div class="filter-group">
           <label>MONTH</label>
-          <select id="monthSel" onchange="applyFilters()"></select>
+          <select id="monthSel" onchange="populateShipDates();applyFilters()"></select>
+        </div>
+
+        <div class="filter-group">
+          <label>SHIP DATE</label>
+          <select id="shipSel" onchange="applyFilters()"></select>
         </div>
 
         <button class="btn btn-refresh" onclick="loadData()">Refresh</button>
@@ -66,7 +76,7 @@
   </div>
 
   <div class="panel">
-    <div id="tableWrap" class="table-wrap">
+    <div class="table-wrap" id="tableWrap">
       <div class="loading">Loading...</div>
     </div>
   </div>
@@ -76,7 +86,7 @@
 <div class="modal" id="printCopyModal">
   <div class="modal-box">
     <h3 class="modal-title">Print Copy</h3>
-    <p>How many COPY?</p>
+    <p class="modal-text">How many COPY?</p>
     <input id="printCopyInput" type="number" min="1" value="3" style="width:100%;height:38px;font-size:14px">
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closePrintCopyModal()">Cancel</button>
@@ -88,34 +98,67 @@
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxwY7OL6A9FSB9PvDaLTcjTEh4tDWFyvIRlwSjv7PhbGWgrwK_BkuNwZeApw7UaHXvM/exec';
 
-let DATA = {};
-let allRows = [];
-let filteredRows = [];
-let selectedIds = {};
-let printRows = [];
+var DATA = {};
+var allRows = [];
+var filteredRows = [];
+var selectedIds = {};
+var printRows = [];
 
-const DISPLAY_HEADERS = [
-  'BUYER','STYLE','PO','COUNTRY','COLOR','Order Qty','Ship +merged Qty','Merged Qty',
-  'Short','Excess','Short %','Excess %','ASSORT CTN','SOLID CTN','MIXED CTN','TOTAL CTN',
+var DISPLAY_HEADERS = [
+  'BUYER','STYLE','PO','COUNTRY','COLOR',
+  'Order Qty','Ship +merged Qty','Merged Qty','Short','Excess',
+  'Short %','Excess %','ASSORT CTN','SOLID CTN','MIXED CTN','TOTAL CTN',
   'SHIP MODE','Remarks','CUTOFF','MONTH','TOD DATE','SHIP DATE','STATUS'
 ];
 
 function api(action, payload){
-  return fetch(API_URL, {
-    method:'POST',
-    body: JSON.stringify({action:action, payload:payload || {}})
-  }).then(r => r.json()).then(res => {
-    if(!res.success) throw new Error(res.message || 'API error');
-    return res.data;
+  return new Promise(function(resolve, reject){
+    var callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+
+    window[callbackName] = function(res){
+      delete window[callbackName];
+      script.remove();
+
+      if(!res.success){
+        reject(new Error(res.message || 'API error'));
+        return;
+      }
+      resolve(res.data);
+    };
+
+    var script = document.createElement('script');
+    script.onerror = function(){
+      delete window[callbackName];
+      script.remove();
+      reject(new Error('API load failed'));
+    };
+
+    script.src = API_URL
+      + '?action=' + encodeURIComponent(action)
+      + '&payload=' + encodeURIComponent(JSON.stringify(payload || {}))
+      + '&callback=' + encodeURIComponent(callbackName)
+      + '&t=' + Date.now();
+
+    document.body.appendChild(script);
   });
 }
 
 function escapeHtml(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function escapeAttr(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;');
 }
 
 function num(v){
-  var n = Number(String(v||0).replace(/,/g,''));
+  var n = Number(String(v||0).replace(/,/g,'').trim());
   return isNaN(n) ? 0 : n;
 }
 
@@ -123,56 +166,94 @@ function fnum(v){
   return num(v).toLocaleString();
 }
 
-function toast(msg,color){
-  let t=document.createElement('div');
-  t.className='toast';
-  t.style.background=color||'#333';
-  t.textContent=msg;
+function showToast(msg, color){
+  var old = document.getElementById('_toast');
+  if(old) old.remove();
+
+  var t = document.createElement('div');
+  t.id = '_toast';
+  t.className = 'toast';
+  t.style.background = color || '#333';
+  t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2200);
+
+  setTimeout(function(){ t.remove(); }, 2200);
 }
 
 function loadData(){
-  document.getElementById('tableWrap').innerHTML='<div class="loading">Loading...</div>';
-  api('getMainData').then(d=>{
-    DATA=d;
-    allRows=d.rows || [];
+  document.getElementById('tableWrap').innerHTML = '<div class="loading">Loading...</div>';
+
+  api('getMainData', {}).then(function(d){
+    DATA = d || {};
+    allRows = DATA.rows || [];
     setupFilters();
     applyFilters();
-  }).catch(e=>{
-    document.getElementById('tableWrap').innerHTML='<div class="loading">Error: '+escapeHtml(e.message)+'</div>';
+  }).catch(function(e){
+    document.getElementById('tableWrap').innerHTML =
+      '<div class="loading">Error: '+escapeHtml(e.message)+'</div>';
   });
 }
 
 function setupFilters(){
-  let f=DATA.filters || {};
-  let yearSel=document.getElementById('yearSel');
-  yearSel.innerHTML='<option value="">All</option>'+(f.years||[]).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
-  yearSel.value=f.currentYear || '';
+  var f = DATA.filters || {};
+  var yearSel = document.getElementById('yearSel');
 
+  yearSel.innerHTML = '<option value="">All</option>' + (f.years || []).map(function(y){
+    return '<option value="'+escapeAttr(y)+'">'+escapeHtml(y)+'</option>';
+  }).join('');
+
+  yearSel.value = f.currentYear || '';
   populateMonths();
+  populateShipDates();
 }
 
 function populateMonths(){
-  let year=document.getElementById('yearSel').value;
-  let months=((DATA.filters||{}).monthsByYear||{})[year] || [];
-  let monthSel=document.getElementById('monthSel');
-  monthSel.innerHTML='<option value="">All</option>'+months.map(m=>'<option value="'+m+'">'+m+'</option>').join('');
-  monthSel.value=(((DATA.filters||{}).defaultMonthByYear||{})[year]) || '';
+  var year = document.getElementById('yearSel').value;
+  var months = ((DATA.filters || {}).monthsByYear || {})[year] || [];
+  var sel = document.getElementById('monthSel');
+
+  sel.innerHTML = '<option value="">All</option>' + months.map(function(m){
+    return '<option value="'+escapeAttr(m)+'">'+escapeHtml(m)+'</option>';
+  }).join('');
+
+  sel.value = (((DATA.filters || {}).defaultMonthByYear || {})[year]) || '';
+}
+
+function populateShipDates(){
+  var year = document.getElementById('yearSel').value;
+  var month = document.getElementById('monthSel').value;
+  var dates = [];
+
+  if(year && month){
+    dates = (((DATA.filters || {}).shipDatesByYearMonth || {})[year] || {})[month] || [];
+  }
+
+  var sel = document.getElementById('shipSel');
+  sel.innerHTML = '<option value="">All</option>' + dates.map(function(d){
+    return '<option value="'+escapeAttr(d)+'">'+escapeHtml(d)+'</option>';
+  }).join('');
 }
 
 function applyFilters(){
-  let q=(document.getElementById('searchBox').value||'').toLowerCase();
-  let year=document.getElementById('yearSel').value;
-  let month=document.getElementById('monthSel').value;
+  var q = (document.getElementById('searchBox').value || '').toLowerCase();
+  var year = document.getElementById('yearSel').value;
+  var month = document.getElementById('monthSel').value;
+  var ship = document.getElementById('shipSel').value;
 
-  filteredRows=allRows.filter(r=>{
-    if(year && r.YEAR!==year) return false;
-    if(month && r.MONTH!==month) return false;
+  filteredRows = allRows.filter(function(r){
+    if(year && r.YEAR !== year) return false;
+    if(month && r.MONTH !== month) return false;
+    if(ship && r['SHIP DATE'] !== ship) return false;
+
     if(q){
-      let hay=(r.BUYER+' '+r.STYLE+' '+r.PO+' '+r.COUNTRY+' '+r.COLOR).toLowerCase();
-      if(hay.indexOf(q)<0) return false;
+      var hay = (
+        (r.BUYER||'')+' '+(r.STYLE||'')+' '+(r.PO||'')+' '+
+        (r.COUNTRY||'')+' '+(r.COLOR||'')
+      ).toLowerCase();
+
+      if(hay.indexOf(q) < 0) return false;
     }
+
     return true;
   });
 
@@ -180,63 +261,57 @@ function applyFilters(){
 }
 
 function renderTable(){
-  let wrap=document.getElementById('tableWrap');
+  var wrap = document.getElementById('tableWrap');
+
   if(!filteredRows.length){
-    wrap.innerHTML='<div class="loading">No data found</div>';
+    wrap.innerHTML = '<div class="loading">No data found</div>';
     return;
   }
 
-  let allChecked=filteredRows.every(r=>selectedIds[r.__rowNumber]);
-
-  let html='<table><thead><tr>';
-  html+='<th class="check-col"><input type="checkbox" '+(allChecked?'checked':'')+' onchange="toggleAll(this.checked)"></th>';
-  DISPLAY_HEADERS.forEach(h=>html+='<th>'+escapeHtml(h)+'</th>');
-  html+='<th class="action-cell">Actions</th></tr></thead><tbody>';
-
-  filteredRows.forEach(r=>{
-    let rn=r.__rowNumber;
-    html+='<tr>';
-    html+='<td class="check-col"><input type="checkbox" '+(selectedIds[rn]?'checked':'')+' onchange="toggleRow('+rn+',this.checked)"></td>';
-
-    DISPLAY_HEADERS.forEach(h=>{
-      let val=r[h] || '';
-      html+='<td>'+(typeof val==='number' || ['Order Qty','TOTAL CTN','Short','Excess'].indexOf(h)>=0 ? fnum(val) : escapeHtml(val))+'</td>';
-    });
-
-    html+='<td class="action-cell"><button class="btn btn-print" onclick="printRow('+rn+')">🖨️</button></td>';
-    html+='</tr>';
+  var allChecked = filteredRows.length > 0 && filteredRows.every(function(r){
+    return !!selectedIds[r.__rowNumber];
   });
 
-  html+='</tbody></table>';
-  wrap.innerHTML=html;
+  var html = '<table><thead><tr>';
+  html += '<th class="check-col"><input type="checkbox" '+(allChecked?'checked':'')+' onchange="toggleAll(this.checked)"></th>';
+
+  DISPLAY_HEADERS.forEach(function(h){
+    html += '<th>'+escapeHtml(h)+'</th>';
+  });
+
+  html += '<th class="action-cell">Actions</th></tr></thead><tbody>';
+
+  filteredRows.forEach(function(r){
+    var rn = r.__rowNumber;
+
+    html += '<tr>';
+    html += '<td class="check-col"><input type="checkbox" '+(selectedIds[rn]?'checked':'')+' onchange="toggleRow('+rn+',this.checked)"></td>';
+
+    DISPLAY_HEADERS.forEach(function(h){
+      var val = r[h] == null ? '' : r[h];
+      var isNum = ['Order Qty','Ship +merged Qty','Merged Qty','Short','Excess','ASSORT CTN','SOLID CTN','MIXED CTN','TOTAL CTN'].indexOf(h) >= 0;
+      html += '<td>'+(isNum ? fnum(val) : escapeHtml(val))+'</td>';
+    });
+
+    html += '<td class="action-cell"><button class="btn btn-row-print" onclick="printRow('+rn+')">🖨️</button></td>';
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
 }
 
 function toggleAll(checked){
-  filteredRows.forEach(r=>{
-    if(checked) selectedIds[r.__rowNumber]=true;
+  filteredRows.forEach(function(r){
+    if(checked) selectedIds[r.__rowNumber] = true;
     else delete selectedIds[r.__rowNumber];
   });
   renderTable();
 }
 
-function toggleRow(rn,checked){
-  if(checked) selectedIds[rn]=true;
+function toggleRow(rn, checked){
+  if(checked) selectedIds[rn] = true;
   else delete selectedIds[rn];
-}
-
-function openPrintCopyModal(rows){
-  printRows=rows || [];
-  document.getElementById('printCopyInput').value='3';
-  document.getElementById('printCopyModal').classList.add('show');
-  setTimeout(()=>{
-    document.getElementById('printCopyInput').focus();
-    document.getElementById('printCopyInput').select();
-  },100);
-}
-
-function closePrintCopyModal(){
-  document.getElementById('printCopyModal').classList.remove('show');
-  printRows=[];
 }
 
 function printRow(rn){
@@ -244,152 +319,274 @@ function printRow(rn){
 }
 
 function printSelected(){
-  let rns=Object.keys(selectedIds).map(Number).filter(Boolean);
+  var rns = Object.keys(selectedIds).map(Number).filter(Boolean);
+
   if(!rns.length){
-    toast('No rows selected','#f57c00');
+    showToast('No rows selected', '#f57c00');
     return;
   }
+
   openPrintCopyModal(rns);
 }
 
-function confirmPrintCopy(){
-  let copies=parseInt(document.getElementById('printCopyInput').value,10);
-  if(!copies || copies<1) copies=3;
+function openPrintCopyModal(rows){
+  printRows = rows || [];
+  document.getElementById('printCopyInput').value = '3';
+  document.getElementById('printCopyModal').classList.add('show');
 
-  let rns=printRows.slice();
+  setTimeout(function(){
+    document.getElementById('printCopyInput').focus();
+    document.getElementById('printCopyInput').select();
+  }, 100);
+}
+
+function closePrintCopyModal(){
+  document.getElementById('printCopyModal').classList.remove('show');
+  printRows = [];
+}
+
+function confirmPrintCopy(){
+  var copies = parseInt(document.getElementById('printCopyInput').value, 10);
+  if(!copies || copies < 1) copies = 3;
+
+  var rns = printRows.slice();
   closePrintCopyModal();
 
-  toast('Preparing print...','#ef6c00');
+  if(!rns.length){
+    showToast('No rows selected', '#f57c00');
+    return;
+  }
 
-  api('getPrintData',{rowNumbers:rns}).then(items=>{
+  showToast('Preparing print...', '#ef6c00');
+
+  api('getPrintData', {rowNumbers:rns}).then(function(items){
     if(!items || !items.length){
-      toast('No print data','#d32f2f');
+      showToast('No print data', '#d32f2f');
       return;
     }
 
-    let duplicated=[];
-    items.forEach(item=>{
-      for(let i=0;i<copies;i++){
+    items = sortPrintItemsByCountry(items);
+
+    var duplicated = [];
+    items.forEach(function(item){
+      for(var i=0; i<copies; i++){
         duplicated.push(JSON.parse(JSON.stringify(item)));
       }
     });
 
-    let w=window.open('','_blank');
+    var w = window.open('', '_blank');
     if(!w){
-      toast('Popup blocked! Allow popups.','#d32f2f');
+      showToast('Popup blocked! Allow popups.', '#d32f2f');
       return;
     }
 
+    showToast('Print window opened ('+duplicated.length+' copies)', '#2e7d32');
+
+    // 1 page = only 1 block
     w.document.write(buildPrintDocument(duplicated));
     w.document.close();
-  }).catch(e=>{
-    toast('Print failed: '+e.message,'#d32f2f');
+
+  }).catch(function(e){
+    showToast('Print failed: '+e.message, '#d32f2f');
   });
 }
 
-function buildPrintDocument(items){
-  let pages=items.map(item=>'<div class="page">'+renderPrintBlock(item)+'</div>').join('');
+function sortPrintItemsByCountry(items){
+  var withKey = items.map(function(it){
+    var c = '', col = '';
+    if(it.countryRows && it.countryRows.length){
+      c = it.countryRows[0].country || '';
+      col = it.countryRows[0].color || '';
+    }
+    return {it:it, c:c, col:col};
+  });
 
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-<title>Print</title>
-<style>
-*{box-sizing:border-box}
-@page{size:A4 portrait;margin:8mm}
-body{margin:0;font-family:Arial,sans-serif;color:#000}
-.page{page-break-after:always;width:100%;max-width:780px;margin:0 auto}
-.top{text-align:center;position:relative;min-height:130px}
-h1{font-size:18px;margin:0}
-h2{font-size:14px;margin:4px 0}
-h3{font-size:16px;margin:6px 0}
-.logo{position:absolute;top:0;right:0;width:160px;height:100px}
-.logo img{max-width:155px;max-height:95px}
-.info{text-align:left;display:inline-block;font-size:11px;font-weight:700;line-height:1.6}
-table{width:100%;border-collapse:collapse;margin-top:8px}
-th,td{border:1px solid #000;padding:3px 4px;font-size:9px;text-align:center}
-th{background:#12dfb3}
-.qs{text-align:center;font-weight:800;text-decoration:underline;margin-top:20px}
-</style>
-</head>
-<body>
-${pages}
-<script>
-window.onload=function(){setTimeout(function(){window.print()},250)}
-<\/script>
-</body>
-</html>`;
+  withKey.sort(function(a,b){
+    var sc = String(a.c).localeCompare(String(b.c));
+    if(sc !== 0) return sc;
+    return String(a.col).localeCompare(String(b.col));
+  });
+
+  return withKey.map(function(x){ return x.it; });
+}
+
+function buildPrintDocument(items){
+  var pagesHtml = items.map(function(item){
+    return '<div class="page">'+renderPrintBlock(item)+'</div>';
+  }).join('');
+
+  return '<!DOCTYPE html><html><head><title>Print</title><style>'+
+    '*{box-sizing:border-box}'+
+    '@page{size:A4 portrait;margin:8mm}'+
+    'body{margin:0;padding:0;font-family:Arial,sans-serif;background:#fff;color:#000}'+
+    '.page{width:100%;max-width:780px;margin:0 auto;page-break-after:always;page-break-inside:avoid}'+
+    '.top{position:relative;min-height:145px;margin-bottom:10px}'+
+    '.center-block{width:100%;text-align:center;padding:0 180px}'+
+    '.center-block h1{margin:0;font-size:18px;font-weight:800}'+
+    '.center-block h2{margin:4px 0 0 0;font-size:14px;font-weight:700}'+
+    '.center-block h3{margin:6px 0 10px 0;font-size:16px;font-weight:800}'+
+    '.summary-lines{display:inline-block;text-align:left;line-height:1.6;font-size:11px;font-weight:700}'+
+    '.logo-box{position:absolute;top:0;right:0;width:170px;height:120px;display:flex;align-items:flex-start;justify-content:center}'+
+    '.logo-box img{max-width:165px;max-height:110px;object-fit:contain}'+
+    'table{width:100%;border-collapse:collapse;table-layout:fixed}'+
+    'th,td{border:1px solid #000;padding:3px 4px;text-align:center;font-size:9px;vertical-align:middle;overflow:hidden;word-break:break-word;white-space:normal}'+
+    'th{background:#12dfb3;font-weight:800}'+
+    '.upper-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:16px}'+
+    '.bottom-section{margin-top:22px}'+
+    '.qs{text-align:center;font-size:13px;font-weight:800;margin:0 0 10px 0;text-decoration:underline}'+
+    '.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:8px;align-items:start}'+
+    '.signature-section{margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 30px}'+
+    '.signature-box{display:flex;flex-direction:column;align-items:center;min-width:160px}'+
+    '.signature-line{width:160px;height:52px;border-bottom:2px solid #d32f2f}'+
+    '.signature-title{margin-top:6px;font-size:11px;font-weight:700;text-align:center;text-transform:uppercase}'+
+    '</style></head><body>'+
+    pagesHtml+
+    '<script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script>'+
+    '</body></html>';
+}
+
+function renderMeasureRows(measures,totalCtn){
+  var rows = '';
+
+  (measures || []).forEach(function(m){
+    rows += '<tr><td>'+escapeHtml(m.meas)+'</td><td>'+fnum(m.ctn)+'</td><td>'+escapeHtml(m.type)+'</td></tr>';
+  });
+
+  if(!rows){
+    rows = '<tr><td></td><td></td><td>BIG</td></tr>'+
+           '<tr><td></td><td></td><td>BIG</td></tr>'+
+           '<tr><td></td><td></td><td>SMALL</td></tr>'+
+           '<tr><td></td><td></td><td>SMALL</td></tr>';
+  }
+
+  rows += '<tr><th>TOTAL</th><th>'+fnum(totalCtn)+'</th><th>CTN</th></tr>';
+  return rows;
+}
+
+function renderSignatureSection(signatures){
+  if(!signatures || !signatures.length) return '';
+
+  var html = '<div class="signature-section">';
+  signatures.forEach(function(sig){
+    html += '<div class="signature-box">'+
+      '<div class="signature-line"></div>'+
+      '<div class="signature-title">'+escapeHtml(sig)+'</div>'+
+      '</div>';
+  });
+  html += '</div>';
+  return html;
 }
 
 function renderPrintBlock(item){
-  let total=item.total || {};
-  let rows=(item.countryRows || []).map(r=>`
-<tr>
-<td>${escapeHtml(r.country)}</td>
-<td>${escapeHtml(r.color)}</td>
-<td>${fnum(r.orderQty)}</td>
-<td>${fnum(r.shipMergedQty)}</td>
-<td>${fnum(r.mergedQty)}</td>
-<td>${fnum(r.short)}</td>
-<td>${fnum(r.excess)}</td>
-<td>${escapeHtml(r.shortPct)}</td>
-<td>${escapeHtml(r.excessPct)}</td>
-<td>${fnum(r.assort)}</td>
-<td>${fnum(r.solid)}</td>
-<td>${fnum(r.mixed)}</td>
-<td>${fnum(r.ctn)}</td>
-<td>${escapeHtml(r.shipMode)}</td>
-<td>${escapeHtml(r.remarks)}</td>
-</tr>`).join('');
+  var rows = item.countryRows || [];
+  var total = item.total || {};
 
-  return `
-<div class="top">
-  <h1>${escapeHtml(item.companyName)}</h1>
-  <h2>${escapeHtml(item.unitName)}</h2>
-  <h3>${escapeHtml(item.summaryTitle)}</h3>
-  <div class="info">
-    <div>BUYER: ${escapeHtml(item.buyer)}</div>
-    <div>STYLE: ${escapeHtml(item.style)}</div>
-    <div>PO NO: ${escapeHtml(item.po)}</div>
-    <div>O/QTY: ${fnum(item.orderQty)}</div>
-    <div>TOD DATE: ${escapeHtml(item.todDate)}</div>
-    <div>FINAL INS. DATE: ${escapeHtml(item.finalInsDate)}</div>
-  </div>
-  <div class="logo">${item.logo?'<img src="'+item.logo+'">':''}</div>
-</div>
+  var bodyRows = rows.map(function(r){
+    return '<tr>'+
+      '<td>'+escapeHtml(r.country)+'</td>'+
+      '<td>'+escapeHtml(r.color)+'</td>'+
+      '<td>'+fnum(r.orderQty)+'</td>'+
+      '<td>'+fnum(r.shipMergedQty)+'</td>'+
+      '<td>'+fnum(r.mergedQty)+'</td>'+
+      '<td>'+fnum(r.short)+'</td>'+
+      '<td>'+fnum(r.excess)+'</td>'+
+      '<td>'+escapeHtml(r.shortPct)+'</td>'+
+      '<td>'+escapeHtml(r.excessPct)+'</td>'+
+      '<td>'+fnum(r.assort)+'</td>'+
+      '<td>'+fnum(r.solid)+'</td>'+
+      '<td>'+fnum(r.mixed)+'</td>'+
+      '<td>'+fnum(r.ctn)+'</td>'+
+      '<td>'+escapeHtml(r.shipMode)+'</td>'+
+      '<td>'+escapeHtml(r.remarks)+'</td>'+
+      '</tr>';
+  }).join('');
 
-<table>
-<tr>
-<th>COUNTRY</th><th>COLOR</th><th>Order Qty</th><th>Ship +merged Qty</th><th>Merged Qty</th>
-<th>Short</th><th>Excess</th><th>SHORT %</th><th>EXCESS %</th>
-<th>ASSORT</th><th>SOLID</th><th>MIXED</th><th>CTN</th><th>SHIP MODE</th><th>Remarks</th>
-</tr>
-${rows}
-<tr>
-<td><b>TOTAL</b></td><td></td>
-<td><b>${fnum(total.orderQty)}</b></td>
-<td><b>${fnum(total.shipMergedQty)}</b></td>
-<td><b>${fnum(total.mergedQty)}</b></td>
-<td><b>${fnum(total.short)}</b></td>
-<td><b>${fnum(total.excess)}</b></td>
-<td><b>${escapeHtml(total.shortPct)}</b></td>
-<td><b>${escapeHtml(total.excessPct)}</b></td>
-<td><b>${fnum(total.assort)}</b></td>
-<td><b>${fnum(total.solid)}</b></td>
-<td><b>${fnum(total.mixed)}</b></td>
-<td><b>${fnum(total.ctn)}</b></td>
-<td></td><td></td>
-</tr>
-</table>
+  return '<div style="position:relative;page-break-inside:avoid">'+
+    '<div class="top">'+
+      '<div class="center-block">'+
+        '<h1>'+escapeHtml(item.companyName)+'</h1>'+
+        '<h2>'+escapeHtml(item.unitName)+'</h2>'+
+        '<h3>'+escapeHtml(item.summaryTitle)+'</h3>'+
+        '<div class="summary-lines">'+
+          '<div>BUYER: '+escapeHtml(item.buyer)+'</div>'+
+          '<div>STYLES: '+escapeHtml(item.style)+'</div>'+
+          '<div>PO NO: '+escapeHtml(item.po)+'</div>'+
+          '<div>O/QTY: '+fnum(item.orderQty)+'</div>'+
+          '<div>TOD DATE: '+escapeHtml(item.todDate)+'</div>'+
+          '<div>FINAL INS. DATE: '+escapeHtml(item.finalInsDate)+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="logo-box">'+(item.logo?'<img src="'+escapeAttr(item.logo)+'" alt="logo">':'')+'</div>'+
+    '</div>'+
 
-<div class="qs">QS</div>
-<table>
-<tr><th>PERTICULARS</th><th>OK</th><th>Inspection type</th><th>OK</th><th>CUTTING</th></tr>
-<tr><td>P / S</td><td></td><td>Initial</td><td></td><td>SEWING</td></tr>
-<tr><td>W / T</td><td></td><td>Inline</td><td></td><td>FINISHING</td></tr>
-<tr><td>TOD</td><td></td><td>Final</td><td></td><td>PACK</td></tr>
-</table>`;
+    '<div class="upper-grid">'+
+      '<table>'+
+        '<tr><th>P/S</th><th>OK</th></tr>'+
+        '<tr><td>WASH TEST</td><td>OK</td></tr>'+
+        '<tr><td>PRICE TAG</td><td>OK</td></tr>'+
+        '<tr><td>PACKING</td><td>OK</td></tr>'+
+      '</table>'+
+      '<table>'+
+        '<tr><th>CTN MEAS</th><th>CTN</th><th>TYPE</th></tr>'+
+        renderMeasureRows(item.measureRows,total.ctn)+
+      '</table>'+
+    '</div>'+
+
+    '<table>'+
+      '<tr>'+
+        '<th>COUNTRY</th><th>COLOR</th><th>Order Qty</th><th>Ship +merged Qty</th><th>Merged Qty</th>'+
+        '<th>Short</th><th>Excess</th><th>SHORT %</th><th>EXCESS %</th>'+
+        '<th>ASSORT</th><th>SOLID</th><th>MIXED</th><th>CTN</th><th>SHIP MODE</th><th>Remarks</th>'+
+      '</tr>'+
+      bodyRows+
+      '<tr>'+
+        '<td><b>TOTAL</b></td><td></td>'+
+        '<td><b>'+fnum(total.orderQty)+'</b></td>'+
+        '<td><b>'+fnum(total.shipMergedQty)+'</b></td>'+
+        '<td><b>'+fnum(total.mergedQty)+'</b></td>'+
+        '<td><b>'+fnum(total.short)+'</b></td>'+
+        '<td><b>'+fnum(total.excess)+'</b></td>'+
+        '<td><b>'+escapeHtml(total.shortPct)+'</b></td>'+
+        '<td><b>'+escapeHtml(total.excessPct)+'</b></td>'+
+        '<td><b>'+fnum(total.assort)+'</b></td>'+
+        '<td><b>'+fnum(total.solid)+'</b></td>'+
+        '<td><b>'+fnum(total.mixed)+'</b></td>'+
+        '<td><b>'+fnum(total.ctn)+'</b></td>'+
+        '<td></td><td></td>'+
+      '</tr>'+
+    '</table>'+
+
+    '<div class="bottom-section">'+
+      '<div class="qs">QS</div>'+
+      '<div class="bottom-grid">'+
+        '<table>'+
+          '<tr><th>PERTICULARS</th><th>OK</th></tr>'+
+          '<tr><td>P / S</td><td></td></tr>'+
+          '<tr><td>W / T</td><td></td></tr>'+
+          '<tr><td>TOD</td><td></td></tr>'+
+          '<tr><td>PULL TEST</td><td></td></tr>'+
+          '<tr><td>NICKEL TEST</td><td></td></tr>'+
+        '</table>'+
+        '<table>'+
+          '<tr><th>Inspection type</th><th>OK</th></tr>'+
+          '<tr><td>Initial</td><td></td></tr>'+
+          '<tr><td>Inline</td><td></td></tr>'+
+          '<tr><td>Final</td><td></td></tr>'+
+          '<tr><td>Skip</td><td></td></tr>'+
+          '<tr><td>Order/Qty</td><td></td></tr>'+
+          '<tr><td>Ship out</td><td></td></tr>'+
+        '</table>'+
+        '<table>'+
+          '<tr><th>CUTTING</th></tr>'+
+          '<tr><td>SEWING</td></tr>'+
+          '<tr><td>FINISHING</td></tr>'+
+          '<tr><td>PACK</td></tr>'+
+          '<tr><td>FAB/MIL</td></tr>'+
+        '</table>'+
+      '</div>'+
+    '</div>'+
+    renderSignatureSection(item.signatures)+
+  '</div>';
 }
 
 loadData();
