@@ -1,23 +1,36 @@
-<html>
+<!DOCTYPE html>
+<html lang="bn">
   <head>
     <meta charset="utf-8">
-    <title>MONTHLY STOCK REPORT</title>
+    <!-- মোবাইল স্ক্রিনে ফিট হওয়ার জন্য এই মেটা ট্যাগটি আবশ্যক -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DAILY PAD REPORT SUBMIT </title>
     <style>
-      /* Ensure the body takes up the full height of the page */
+      /* ফুল স্ক্রিন লেআউট নিশ্চিত করার আধুনিক নিয়ম */
       html, body {
         margin: 0;
         padding: 0;
-        height: 100%;
-      }
-      /* Make iframe take up 100% width and height of the screen */
-      iframe {
         width: 100%;
-        height: 100vh; /* Viewport height */
+        height: 100%;
+        overflow: hidden; /* মূল পেজের স্ক্রোলবার লুকিয়ে রাখবে */
+        display: flex;
+        flex-direction: column;
+      }
+      
+      /* আইফ্রেম যেন সব মোবাইলে স্মুথলি কাজ করে */
+      iframe {
+        flex-grow: 1;
+        width: 100%;
+        height: 100%;
         border: none;
+        /* মোবাইলে আইফ্রেমের ভেতরের স্ক্রোলিং সচল রাখার জন্য */
+        -webkit-overflow-scrolling: touch; 
+        overflow-y: auto;
       }
     </style>
   </head>
   <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbxIAYvzRAdOEVipXt9qka9FP6kDtrx4dWlQkWHGA7dfKn4Pn8WSMdmsl47nK1X3iGs-CQ/exec" scrolling="no"></iframe>
+    <!-- scrolling="no" বাদ দেওয়া হয়েছে এবং স্ক্রোলিং সিএসএস দিয়ে হ্যান্ডেল করা হয়েছে -->
+    <iframe src="https://script.google.com/macros/s/AKfycbxIAYvzRAdOEVipXt9qka9FP6kDtrx4dWlQkWHGA7dfKn4Pn8WSMdmsl47nK1X3iGs-CQ/exec"></iframe>
   </body>
 </html>
